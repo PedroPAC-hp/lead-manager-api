@@ -1,0 +1,44 @@
+# Ambientes virtuais Python
+venv/
+env/
+ENV/
+.venv/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Arquivos de ambiente com SENHAS (MUITO IMPORTANTE!)
+.env
+.env.local
+.env.*.local
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Banco de dados local (se usar)
+*.db
+*.sqlite
+*.sqlite3
+
+# Arquivos de teste
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribuição / packaging
+dist/
+build/
+*.egg-info/

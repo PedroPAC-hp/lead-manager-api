@@ -1,0 +1,27 @@
+# Framework web principal
+fastapi==0.104.1
+
+# Servidor ASGI para rodar a aplicação
+uvicorn[standard]==0.24.0
+
+# Validação de dados (Pydantic v2)
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Banco de dados MongoDB
+pymongo[srv]==4.6.0  # srv permite conexão com MongoDB Atlas
+
+# Segurança e autenticação
+passlib[argon2]==1.7.4  # Argon2 é mais seguro que bcrypt
+python-jose[cryptography]==3.3.0  # Para criar tokens JWT
+python-multipart==0.0.6  # Para form-data no login
+
+# Validação de email
+email-validator==2.1.0
+
+# Variáveis de ambiente
+python-dotenv==1.0.0
+
+# Para testes (opcional mas recomendado)
+pytest==7.4.3
+httpx==0.25.2  # Para testar requisições HTTP
