@@ -234,7 +234,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 **Pedro** - Desenvolvedor Full Stack
 
 - LinkedIn: [Seu LinkedIn]
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
+- GitHub: [@PedroPAC-hp](https://github.com/PedroPAC-hp)
 
 ## 📄 Licença
 
