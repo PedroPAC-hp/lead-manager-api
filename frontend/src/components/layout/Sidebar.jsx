@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+﻿import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import {
@@ -12,10 +12,7 @@ import {
   Sun,
   Moon,
   Zap,
-  ChevronLeft,
 } from 'lucide-react';
-import { useState } from 'react';
-import clsx from 'clsx';
 
 const menuItems = [
   { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -29,115 +26,176 @@ const menuItems = [
 export default function Sidebar() {
   const { user, logout } = useAuth();
   const { darkMode, toggleDarkMode } = useTheme();
-  const [collapsed, setCollapsed] = useState(false);
+
+  const sidebarStyle = {
+    position: 'fixed',
+    left: 0,
+    top: 0,
+    height: '100vh',
+    width: '256px',
+    backgroundColor: darkMode ? '#0f172a' : '#ffffff',
+    borderRight: `1px solid ${darkMode ? '#1e293b' : '#e2e8f0'}`,
+    display: 'flex',
+    flexDirection: 'column',
+    zIndex: 50,
+  };
+
+  const headerStyle = {
+    height: '64px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '0 16px',
+    borderBottom: `1px solid ${darkMode ? '#1e293b' : '#e2e8f0'}`,
+  };
+
+  const logoStyle = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  };
+
+  const navItemStyle = (isActive) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontSize: '14px',
+    fontWeight: '500',
+    transition: 'all 0.2s',
+    backgroundColor: isActive ? '#3b82f6' : 'transparent',
+    color: isActive ? '#ffffff' : (darkMode ? '#94a3b8' : '#64748b'),
+  });
 
   return (
-    <aside
-      className={clsx(
-        'fixed left-0 top-0 h-screen bg-white dark:bg-dark-900 border-r',
-        'border-dark-200 dark:border-dark-700 transition-all duration-300 z-50',
-        collapsed ? 'w-20' : 'w-64'
-      )}
-    >
+    <aside style={sidebarStyle}>
       {/* Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-dark-200 dark:border-dark-700">
-        <div className={clsx('flex items-center gap-3', collapsed && 'justify-center w-full')}>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 
-                          flex items-center justify-center shadow-lg">
-            <Zap className="w-5 h-5 text-white" />
-          </div>
-          {!collapsed && (
-            <span className="font-bold text-dark-900 dark:text-white">
-              Lead Manager
-            </span>
-          )}
+      <div style={headerStyle}>
+        <div style={logoStyle}>
+          <Zap style={{ width: '20px', height: '20px', color: '#ffffff' }} />
         </div>
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className={clsx(
-            'p-1.5 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors',
-            collapsed && 'absolute -right-3 top-6 bg-white dark:bg-dark-800 border border-dark-200 dark:border-dark-700 shadow-md'
-          )}
-        >
-          <ChevronLeft
-            className={clsx(
-              'w-5 h-5 text-dark-400 transition-transform',
-              collapsed && 'rotate-180'
-            )}
-          />
-        </button>
+        <span style={{ 
+          fontWeight: 'bold', 
+          fontSize: '18px', 
+          color: darkMode ? '#ffffff' : '#0f172a' 
+        }}>
+          Lead Manager
+        </span>
       </div>
 
       {/* Navigation */}
-      <nav className="p-3 space-y-1">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200',
-                collapsed && 'justify-center',
-                isActive
-                  ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                  : 'text-dark-600 dark:text-dark-400 hover:bg-dark-100 dark:hover:bg-dark-800'
-              )
-            }
-          >
-            <item.icon className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span className="font-medium">{item.label}</span>}
-          </NavLink>
-        ))}
+      <nav style={{ flex: 1, padding: '12px', overflowY: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              style={({ isActive }) => navItemStyle(isActive)}
+            >
+              <item.icon style={{ width: '20px', height: '20px' }} />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </div>
       </nav>
 
       {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-dark-200 dark:border-dark-700">
+      <div style={{ 
+        padding: '12px', 
+        borderTop: `1px solid ${darkMode ? '#1e293b' : '#e2e8f0'}` 
+      }}>
         {/* Theme Toggle */}
         <button
           onClick={toggleDarkMode}
-          className={clsx(
-            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg mb-2',
-            'text-dark-600 dark:text-dark-400 hover:bg-dark-100 dark:hover:bg-dark-800',
-            'transition-colors',
-            collapsed && 'justify-center'
-          )}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            border: 'none',
+            backgroundColor: 'transparent',
+            color: darkMode ? '#94a3b8' : '#64748b',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500',
+          }}
         >
           {darkMode ? (
-            <Sun className="w-5 h-5 text-yellow-500" />
+            <Sun style={{ width: '20px', height: '20px', color: '#fbbf24' }} />
           ) : (
-            <Moon className="w-5 h-5" />
+            <Moon style={{ width: '20px', height: '20px' }} />
           )}
-          {!collapsed && <span className="font-medium">
-            {darkMode ? 'Modo Claro' : 'Modo Escuro'}
-          </span>}
+          <span>{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
         </button>
 
-        {/* User Info & Logout */}
-        <div className={clsx(
-          'flex items-center gap-3 px-3 py-2',
-          collapsed && 'justify-center'
-        )}>
-          <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 
-                          flex items-center justify-center">
-            <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+        {/* User Info */}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px', 
+          padding: '10px 12px',
+          marginTop: '8px' 
+        }}>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            backgroundColor: '#3b82f6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <span style={{ fontSize: '14px', fontWeight: '500', color: '#ffffff' }}>
               {user?.full_name?.charAt(0) || 'U'}
             </span>
           </div>
-          {!collapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-dark-900 dark:text-white truncate">
-                {user?.full_name}
-              </p>
-              <p className="text-xs text-dark-400 truncate">{user?.email}</p>
-            </div>
-          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ 
+              fontSize: '14px', 
+              fontWeight: '500', 
+              color: darkMode ? '#ffffff' : '#0f172a',
+              margin: 0,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}>
+              {user?.full_name}
+            </p>
+            <p style={{ 
+              fontSize: '12px', 
+              color: darkMode ? '#64748b' : '#94a3b8',
+              margin: 0,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}>
+              {user?.email}
+            </p>
+          </div>
           <button
             onClick={logout}
-            className="p-1.5 rounded-lg text-dark-400 hover:text-red-500 
-                       hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            style={{
+              padding: '6px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: 'transparent',
+              color: darkMode ? '#94a3b8' : '#64748b',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
             title="Sair"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut style={{ width: '20px', height: '20px' }} />
           </button>
         </div>
       </div>
