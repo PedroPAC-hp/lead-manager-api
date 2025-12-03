@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
+import { LotesProvider } from './context/LotesContext';
+import { ConfirmProvider } from './context/ConfirmContext';
 import MainLayout from './components/layout/MainLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -51,9 +54,15 @@ export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
+        <ToastProvider>
+          <ConfirmProvider>
+            <AuthProvider>
+              <LotesProvider>
+                <AppRoutes />
+              </LotesProvider>
+            </AuthProvider>
+          </ConfirmProvider>
+        </ToastProvider>
       </ThemeProvider>
     </BrowserRouter>
   );
