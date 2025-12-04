@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
-import { Eye, EyeOff, Sun, Moon, Zap, Loader2 } from 'lucide-react';
+import { Send, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+  const [error, setError] = useState('');
+
   const { login } = useAuth();
-  const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,120 +18,87 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    try {
-      await login(email, password);
-      navigate('/');
-    } catch (err) {
-      setError(err.response?.data?.detail || 'Erro ao fazer login');
-    } finally {
-      setLoading(false);
+    const result = await login(email, password);
+    
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setError(result.error);
     }
+    
+    setLoading(false);
   };
 
-  const bgColor = darkMode ? 'bg-slate-950' : 'bg-slate-100';
-  const cardBg = darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200';
-  const inputBg = darkMode ? 'bg-slate-900 border-slate-600 text-white placeholder-slate-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400';
-  const textColor = darkMode ? 'text-white' : 'text-slate-900';
-  const textMuted = darkMode ? 'text-slate-400' : 'text-slate-500';
-
   return (
-    <div className={`min-h-screen flex items-center justify-center ${bgColor} p-4`}>
-      {/* Toggle Dark Mode */}
-      <button
-        onClick={toggleDarkMode}
-        className={`absolute top-4 right-4 p-2 rounded-lg ${darkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-slate-100 shadow'} transition-colors`}
-      >
-        {darkMode ? (
-          <Sun className="w-5 h-5 text-yellow-400" />
-        ) : (
-          <Moon className="w-5 h-5 text-slate-600" />
-        )}
-      </button>
-
-      <div className="w-full max-w-md">
-        {/* Logo/Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg mb-4">
-            <Zap className="w-8 h-8 text-white" />
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#0f172a', padding: '20px' }}>
+      <div style={{ width: '100%', maxWidth: '400px' }}>
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+            <Send style={{ width: '28px', height: '28px', color: '#ffffff' }} />
           </div>
-          <h1 className={`text-2xl font-bold ${textColor}`}>Lead Manager</h1>
-          <p className={`${textMuted} mt-1`}>Faça login para continuar</p>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#ffffff', margin: '0 0 8px 0' }}>Lead Manager</h1>
+          <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>Faça login para continuar</p>
         </div>
 
-        {/* Card de Login */}
-        <div className={`${cardBg} rounded-xl p-8 border shadow-xl`}>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div className="p-3 rounded-lg bg-red-500/20 border border-red-500/50">
-                <p className="text-sm text-red-400">{error}</p>
-              </div>
-            )}
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ backgroundColor: '#1e293b', borderRadius: '12px', padding: '24px', border: '1px solid #334155' }}>
+          {error && (
+            <div style={{ padding: '12px', borderRadius: '8px', backgroundColor: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', marginBottom: '16px' }}>
+              <p style={{ color: '#ef4444', fontSize: '13px', margin: 0 }}>{error}</p>
+            </div>
+          )}
 
-            <div>
-              <label htmlFor="email" className={`block text-sm font-medium ${textMuted} mb-1.5`}>
-                Email
-              </label>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#94a3b8', marginBottom: '6px' }}>Email</label>
+            <div style={{ position: 'relative' }}>
+              <Mail style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px', color: '#64748b' }} />
               <input
-                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-2.5 rounded-lg border ${inputBg} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                placeholder="seu@email.com"
+                placeholder="admin@exemplo.com"
                 required
+                style={{ width: '100%', padding: '12px 12px 12px 42px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0f172a', color: '#ffffff', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
               />
             </div>
+          </div>
 
-            <div>
-              <label htmlFor="password" className={`block text-sm font-medium ${textMuted} mb-1.5`}>
-                Senha
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-4 py-2.5 rounded-lg border ${inputBg} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all pr-10`}
-                  placeholder="••••••••"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 ${textMuted} hover:text-blue-500`}
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#94a3b8', marginBottom: '6px' }}>Senha</label>
+            <div style={{ position: 'relative' }}>
+              <Lock style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px', color: '#64748b' }} />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                style={{ width: '100%', padding: '12px 42px 12px 42px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0f172a', color: '#ffffff', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              >
+                {showPassword ? <EyeOff style={{ width: '18px', height: '18px', color: '#64748b' }} /> : <Eye style={{ width: '18px', height: '18px', color: '#64748b' }} />}
+              </button>
             </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Entrando...
-                </>
-              ) : (
-                'Entrar'
-              )}
-            </button>
-          </form>
-        </div>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#ffffff', fontSize: '14px', fontWeight: '600', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: loading ? 0.7 : 1 }}
+          >
+            {loading ? <><Loader2 style={{ width: '18px', height: '18px', animation: 'spin 1s linear infinite' }} /> Entrando...</> : 'Entrar'}
+          </button>
+        </form>
 
-        {/* Footer */}
-        <p className={`text-center ${textMuted} text-sm mt-6`}>
-          Lead Manager API v2.0
-        </p>
+        <p style={{ textAlign: 'center', color: '#64748b', fontSize: '12px', marginTop: '16px' }}>Lead Manager API v2.0</p>
       </div>
+
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

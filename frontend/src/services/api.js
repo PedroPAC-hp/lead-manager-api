@@ -36,18 +36,18 @@ export const authService = {
     const formData = new URLSearchParams();
     formData.append('username', email);
     formData.append('password', password);
-    
+
     const response = await api.post('/auth/login', formData, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
     return response.data;
   },
-  
+
   register: async (data) => {
     const response = await api.post('/auth/register', data);
     return response.data;
   },
-  
+
   getMe: async () => {
     const response = await api.get('/auth/me');
     return response.data;
@@ -60,17 +60,17 @@ export const consultoresService = {
     const response = await api.get(`/consultores/?apenas_ativos=${apenasAtivos}`);
     return response.data;
   },
-  
+
   create: async (data) => {
     const response = await api.post('/consultores/', data);
     return response.data;
   },
-  
+
   update: async (id, data) => {
     const response = await api.put(`/consultores/${id}`, data);
     return response.data;
   },
-  
+
   delete: async (id) => {
     const response = await api.delete(`/consultores/${id}`);
     return response.data;
@@ -83,32 +83,32 @@ export const produtosService = {
     const response = await api.get(`/produtos/?apenas_ativos=${apenasAtivos}`);
     return response.data;
   },
-  
+
   get: async (id) => {
     const response = await api.get(`/produtos/${id}`);
     return response.data;
   },
-  
+
   create: async (data) => {
     const response = await api.post('/produtos/', data);
     return response.data;
   },
-  
+
   update: async (id, data) => {
     const response = await api.put(`/produtos/${id}`, data);
     return response.data;
   },
-  
+
   delete: async (id) => {
     const response = await api.delete(`/produtos/${id}`);
     return response.data;
   },
-  
+
   addConsultor: async (produtoId, consultorId) => {
     const response = await api.post(`/produtos/${produtoId}/consultores/${consultorId}`);
     return response.data;
   },
-  
+
   removeConsultor: async (produtoId, consultorId) => {
     const response = await api.delete(`/produtos/${produtoId}/consultores/${consultorId}`);
     return response.data;
@@ -120,37 +120,84 @@ export const leadsService = {
   upload: async (produtoId, file) => {
     const formData = new FormData();
     formData.append('arquivo', file);
-    
+
     const response = await api.post(`/leads/upload/${produtoId}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   },
-  
+
   processar: async (loteId) => {
     const response = await api.post(`/leads/processar/${loteId}`);
     return response.data;
   },
-  
+
   getResumo: async (loteId) => {
     const response = await api.get(`/leads/lote/${loteId}/resumo`);
     return response.data;
   },
-  
+
   getLeads: async (loteId, status = null, skip = 0, limit = 100) => {
     let url = `/leads/lote/${loteId}/leads?skip=${skip}&limit=${limit}`;
     if (status) url += `&status_filtro=${status}`;
     const response = await api.get(url);
     return response.data;
   },
-  
+
   enviar: async (loteId) => {
     const response = await api.post(`/leads/enviar/${loteId}`);
     return response.data;
   },
-  
+
   getHistorico: async (skip = 0, limit = 100) => {
     const response = await api.get(`/leads/historico?skip=${skip}&limit=${limit}`);
+    return response.data;
+  },
+};
+
+// Estatísticas (NOVO)
+export const estatisticasService = {
+  // Dashboard geral
+  getDashboard: async () => {
+    const response = await api.get('/estatisticas/dashboard');
+    return response.data;
+  },
+
+  // Estatísticas por consultor
+  getPorConsultor: async (periodo = 'todos') => {
+    const response = await api.get(`/estatisticas/por-consultor?periodo=${periodo}`);
+    return response.data;
+  },
+
+  // Estatísticas por produto
+  getPorProduto: async () => {
+    const response = await api.get('/estatisticas/por-produto');
+    return response.data;
+  },
+
+  // Dados para gráfico semanal
+  getGraficoSemanal: async () => {
+    const response = await api.get('/estatisticas/grafico-semanal');
+    return response.data;
+  },
+
+  // Listar lotes do banco
+  getLotes: async (skip = 0, limit = 50, status = null) => {
+    let url = `/estatisticas/lotes?skip=${skip}&limit=${limit}`;
+    if (status) url += `&status=${status}`;
+    const response = await api.get(url);
+    return response.data;
+  },
+
+  // Renomear lote
+  renomearLote: async (loteId, nome) => {
+    const response = await api.put(`/estatisticas/lotes/${loteId}/nome?nome=${encodeURIComponent(nome)}`);
+    return response.data;
+  },
+
+  // Listar disparos
+  getDisparos: async (skip = 0, limit = 50) => {
+    const response = await api.get(`/estatisticas/disparos?skip=${skip}&limit=${limit}`);
     return response.data;
   },
 };

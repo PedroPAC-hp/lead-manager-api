@@ -1,7 +1,6 @@
 """
 Módulo de conexão com o banco de dados MongoDB.
 """
-
 from pymongo import MongoClient
 from pymongo.database import Database
 from pymongo.collection import Collection
@@ -69,6 +68,11 @@ def get_historico_collection() -> Collection:
     return get_database()["historico_candidatos"]
 
 
+def get_estatisticas_consultores_collection() -> Collection:
+    """Coleção de estatísticas por consultor"""
+    return get_database()["estatisticas_consultores"]
+
+
 # ==================== UTILIDADES ====================
 
 def test_connection() -> bool:
@@ -99,5 +103,18 @@ def criar_indices():
     get_leads_collection().create_index("candidato_id")
     get_leads_collection().create_index([("candidato_id", 1), ("produto_id", 1)])
     
+    # Índice para leads por consultor (NOVO)
+    get_leads_collection().create_index("consultor_id")
+    get_leads_collection().create_index([("consultor_id", 1), ("status", 1)])
+    get_leads_collection().create_index([("status", 1), ("enviado_em", -1)])
+    
     # Índice para consultores
     get_consultores_collection().create_index("bitrix_id", unique=True)
+    
+    # Índice para lotes
+    get_lotes_collection().create_index("produto_id")
+    get_lotes_collection().create_index([("created_at", -1)])
+    
+    # Índice para disparos
+    get_disparos_collection().create_index("lote_id")
+    get_disparos_collection().create_index([("iniciado_em", -1)])
